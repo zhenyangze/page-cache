@@ -1,5 +1,19 @@
 # Laravel Page Cache
 
+Fork from `JosephSilber/page-cache`, and make some changes.
+1. change the cache page with query string.
+2. change apache and nginx rules.
+
+### todo:
+- add file life time.
+- add cache clear command with name or tags
+- add local cache
+
+> 注意：key=a/b/c/d/e这种格式还不支持
+
+- - -
+
+
 This package allows you to easily cache responses as static files on disk for lightning fast page loads.
 
 - [Introduction](#introduction)
@@ -84,7 +98,7 @@ In order to serve the static files directly once they've been cached, you need t
     }
 
     location / {
-        try_files $uri $uri/ /page-cache/$uri.html /index.php?$query_string;
+        try_files $uri $uri/ /page-cache/$uri$query_string.html /index.php?$query_string;
     }
     ```
 
@@ -97,8 +111,8 @@ In order to serve the static files directly once they've been cached, you need t
     RewriteCond %{REQUEST_URI} ^/?$
     RewriteCond %{DOCUMENT_ROOT}/page-cache/pc__index__pc.html -f
     RewriteRule .? page-cache/pc__index__pc.html [L]
-    RewriteCond %{DOCUMENT_ROOT}/page-cache%{REQUEST_URI}.html -f
-    RewriteRule . page-cache%{REQUEST_URI}.html [L]
+    RewriteCond %{DOCUMENT_ROOT}/page-cache%{REQUEST_URI}%{QUERY_STRING}.html -f
+    RewriteRule . page-cache%{REQUEST_URI}%{QUERY_STRING}.html [L]
     ```
 
 ### Ignoring the cached files
