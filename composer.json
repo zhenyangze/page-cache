@@ -1,7 +1,7 @@
 {
     "name": "yangze/page-cache",
     "description": "Caches responses as static files on disk for lightning fast page loads..",
-    "keywords": ["laravel", "cache", "full-page-cache"],
+    "keywords": ["laravel", "cache", "full-page-cache", "html"],
     "license": "MIT",
     "authors": [
         {
