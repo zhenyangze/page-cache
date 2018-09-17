@@ -3,13 +3,18 @@
 Fork from `JosephSilber/page-cache`, and make some changes.
 1. change the cache page with query string.
 2. change apache and nginx rules.
-
-### todo:
-- add file life time.
-- add cache clear command with name or tags
-- add local cache
+3. add command for checking timeout 
+4. support delete cache file start with category
 
 > 注意：key=a/b/c/d/e这种格式还不支持
+> 按类别设置文件的过期时间，配置文件`config/pagecache.php`
+> ```languagephp
+'timeout' => [
+	'pc__index__pc' => 60 * 60 * 3,
+	'news' => 60 * 60 * 6, 
+	'' => 60 * 60 * 24 * 30, // 最晚一个月更新一次
+],
+```
 
 - - -
 
