@@ -43,6 +43,13 @@ class RefreshCache extends Command
 
     protected function checkTimeout($cache)
     {
+        if (!$cache->files->exists(config_path('pagecache.php'))) {
+            @file_put_contents(config_path('pagecache.php'), "<?php\n\n return " . var_export([
+                'timeout' => [
+                    '' => 60 * 60 * 24 * 30,
+                ]
+            ] . ';', true));
+        }
         $timeOutConfig = config('pagecache.timeout');
         $path = $cache->getDefaultCachePath();
         $files = $cache->files->allFiles($path);
