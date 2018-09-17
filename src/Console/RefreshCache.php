@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Storage;
 use Silber\PageCache\Cache;
 use Illuminate\Console\Command;
 
+/**
+ *
+ */
 class RefreshCache extends Command
 {
     /**
@@ -41,6 +44,13 @@ class RefreshCache extends Command
         }
     }
 
+    /**
+     * checkTimeout
+     *
+     * @param $cache
+     *
+     * @return
+     */
     protected function checkTimeout($cache)
     {
         if (!$cache->files->exists(config_path('pagecache.php'))) {
@@ -52,17 +62,16 @@ class RefreshCache extends Command
         }
         $timeOutConfig = config('pagecache.timeout');
         $path = $cache->getDefaultCachePath();
-        $files = $cache->files->allFiles($path);
-        foreach($files as $file) {
-            $relatePath = $file->getRelativePathname();
-            $fullPath = $file->getPathName();
+        foreach ($this->getFiles($path) as $file) {
+            $fullPath = $file->getPathname();
+            $relatePath = str_ireplace($path . '/', '', $fullPath);
             $createTime = $file->getCTime();
 
-            foreach((array)$timeOutConfig as $category => $time) {
+            foreach ((array)$timeOutConfig as $category => $time) {
                 if (empty($category) && empty($time)) {
                     continue;
                 }
-                if (stripos('X' . $relatePath, 'X' . $category) == 0 && time() > $createTime + $time) {
+                if (stripos('X' . $relatePath, 'X' . $category) === 0 && time() > $createTime + $time) {
                     $this->deleteFile($cache, $fullPath);
                     break;
                 }
@@ -71,18 +80,33 @@ class RefreshCache extends Command
         $this->info('Finish! page-cache check timeout');
     }
 
+    /**
+     * deleteFile
+     *
+     * @param $cache
+     * @param $file
+     *
+     * @return
+     */
     protected function deleteFile($cache, $file)
     {
         $cache->files->delete($file);
     }
 
+    /**
+     * clearCategory
+     *
+     * @param $cache
+     * @param $prefixKey
+     *
+     * @return
+     */
     protected function clearCategory($cache, $prefixKey)
     {
         $path = $cache->getDefaultCachePath();
-        $files = $cache->files->allFiles($path);
-        foreach($files as $file) {
-            $relatePath = $file->getRelativePathname();
-            $fullPath = $file->getPathName();
+        foreach ($this->getFiles($path) as $file) {
+            $fullPath = $file->getPathname();
+            $relatePath = str_ireplace($path . '/', '', $fullPath);
 
             if (stristr($relatePath, $prefixKey)) {
                 $this->deleteFile($cache, $fullPath);
@@ -91,4 +115,21 @@ class RefreshCache extends Command
         $this->info('Finish! page-cache clear category');
     }
 
+    /**
+     * getFiles
+     *
+     * @param $path
+     *
+     * @return
+     */
+    protected function getFiles($path)
+    {
+        $dir = new \RecursiveDirectoryIterator($path);
+        foreach (new \RecursiveIteratorIterator($dir) as $v) {
+            $fileName = $v->getBaseName();
+            if ($fileName != '.' && $fileName != '..') {
+                yield $v;
+            }
+        }
+    }
 }
