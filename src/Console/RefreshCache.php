@@ -13,7 +13,7 @@ class RefreshCache extends Command
      *
      * @var string
      */
-    protected $signature = 'page-cache:Refresh {prefixKey?}';
+    protected $signature = 'page-cache:refresh {prefixKey?}';
 
     /**
      * The console command description.
@@ -48,7 +48,7 @@ class RefreshCache extends Command
                 'timeout' => [
                     '' => 60 * 60 * 24 * 30,
                 ]
-            ] . ';', true));
+            ], true) . ';');
         }
         $timeOutConfig = config('pagecache.timeout');
         $path = $cache->getDefaultCachePath();
