@@ -15,7 +15,7 @@ class Cache
      *
      * @var \Illuminate\Filesystem\Filesystem
      */
-    protected $files;
+    public $files;
 
     /**
      * The container instance.
@@ -213,7 +213,7 @@ class Cache
      *
      * @return string|null
      */
-    protected function getDefaultCachePath()
+    public function getDefaultCachePath()
     {
         if ($this->container && $this->container->bound('path.public')) {
             return $this->container->make('path.public').'/page-cache';
