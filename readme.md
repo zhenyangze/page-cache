@@ -8,7 +8,7 @@ Fork from `JosephSilber/page-cache`, and make some changes.
 
 > 注意：key=a/b/c/d/e这种格式还不支持
 > 按类别设置文件的过期时间，配置文件`config/pagecache.php`
-> ```languagephp
+```php
 'timeout' => [
 	'pc__index__pc' => 60 * 60 * 3,
 	'news' => 60 * 60 * 6, 
