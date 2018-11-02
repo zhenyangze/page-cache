@@ -53,6 +53,6 @@ class CacheResponse
      */
     protected function shouldCache(Request $request, Response $response)
     {
-        return $request->isMethod('GET') && $response->getStatusCode() == 200;
+        return !config('app.debug') && $request->isMethod('GET') && $response->getStatusCode() == 200;
     }
 }
