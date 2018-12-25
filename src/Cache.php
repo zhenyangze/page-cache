@@ -211,6 +211,7 @@ class Cache
 
         $this->files->makeDirectory($path, 0775, true, true);
         $body = $response->getContent();
+        $path = $this->join([$path, $file]);
         if (config('pagecache.pre_function') && is_callable(config('pagecache.pre_function'))) {
             $preFunction = config('pagecache.pre_function');
             $body = $preFunction($body);
