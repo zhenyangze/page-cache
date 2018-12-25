@@ -37,10 +37,8 @@ class CacheResponse
     {
         $response = $next($request);
 
-        if ($this->shouldCache($request, $response)) {
-            $this->cache->cache($request, $response);
-        }
-
+        $this->cache->cacheIfNeeded($request, $response);
+        
         return $response;
     }
 

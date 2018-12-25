@@ -122,7 +122,7 @@ class Cache
      */
     public function cacheIfNeeded(Request $request, Response $response)
     {
-        if ($this->shouldCache($request, $response)) {
+        if ($this->shouldCache($request, $response) && $this->canCache($request)) {
             $this->cache($request, $response);
         }
 
@@ -142,6 +142,63 @@ class Cache
     }
 
     /**
+     * Determines whether the given request/response pair can be cached.
+     *
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     * @return bool
+     */
+    public function canCache(Request $request)
+    {
+        //dd($request->route()->getName());
+        $name = $request->route()->getName();
+        return $this->isInWhiteList($name) && $this->notInBlackList($name);
+    }
+
+    /**
+     * isInWhiteList
+     *
+     * @param $name
+     *
+     * @return  bool
+     */
+    protected function isInWhiteList($name)
+    {
+        return $this->checkInList($name, config('pagecache.whiteList'));
+    }
+    
+    /**
+     * notInBlackList
+     *
+     * @param $name
+     *
+     * @return  bool
+     */
+    protected function notInBlackList($name)
+    {
+        return !$this->checkInList($name, config('pagecache.blackList'));
+    }
+    /**
+     * checkInList
+     *
+     * @param $name
+     * @param $configList
+     *
+     * @return bool
+     */
+    protected function checkInList($name, $configList = [])
+    {
+        if (empty($configList)) {
+            return false;
+        }
+        foreach ($configList as $rule) {
+            if (fnmatch($rule, $name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Cache the response to a file.
      *
      * @param  \Symfony\Component\HttpFoundation\Request  $request
@@ -153,12 +210,25 @@ class Cache
         list($path, $file) = $this->getDirectoryAndFileNames($request);
 
         $this->files->makeDirectory($path, 0775, true, true);
-
+        $body = $this->appendCacheTag($response->getContent());
         $this->files->put(
             $this->join([$path, $file]),
-            $response->getContent(),
+            $body,
             true
         );
+    }
+
+    /**
+     * appendCacheTag 
+     *
+     * @param $body
+     *
+     * @return string 
+     */
+    protected function appendCacheTag($body)
+    {
+        $cacheTag = config('pagecache.meta', 'page-cache');
+        return str_ireplace('</head>', '<meta name="' . $cacheTag . '" content="true" /></head>', $body);
     }
 
     /**
