@@ -210,25 +210,16 @@ class Cache
         list($path, $file) = $this->getDirectoryAndFileNames($request);
 
         $this->files->makeDirectory($path, 0775, true, true);
-        $body = $this->appendCacheTag($response->getContent());
+        $body = $response->getContent();
+        if (config('pagecache.pre_function') && is_callable(config('pagecache.pre_function'))) {
+            $preFunction = config('pagecache.pre_function');
+            $body = $preFunction($body);
+        }
         $this->files->put(
             $this->join([$path, $file]),
             $body,
             true
         );
-    }
-
-    /**
-     * appendCacheTag 
-     *
-     * @param $body
-     *
-     * @return string 
-     */
-    protected function appendCacheTag($body)
-    {
-        $cacheTag = config('pagecache.meta', 'page-cache');
-        return str_ireplace('</head>', '<meta name="' . $cacheTag . '" content="true" /></head>', $body);
     }
 
     /**

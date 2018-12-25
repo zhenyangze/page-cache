@@ -42,15 +42,4 @@ class CacheResponse
         return $response;
     }
 
-    /**
-     * Determines whether the given request/response pair should be cached.
-     *
-     * @param  \Symfony\Component\HttpFoundation\Request  $request
-     * @param  \Symfony\Component\HttpFoundation\Response  $response
-     * @return bool
-     */
-    protected function shouldCache(Request $request, Response $response)
-    {
-        return !config('app.debug') && $request->isMethod('GET') && $response->getStatusCode() == 200;
-    }
 }
