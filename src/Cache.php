@@ -138,7 +138,7 @@ class Cache
      */
     public function shouldCache(Request $request, Response $response)
     {
-        return $request->isMethod('GET') && $response->getStatusCode() == 200;
+        return config('pagecache.cache', true) && $request->isMethod('GET') && $response->getStatusCode() == 200;
     }
 
     /**
