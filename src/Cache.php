@@ -214,10 +214,10 @@ class Cache
         $path = $this->join([$path, $file]);
         if (config('pagecache.pre_function') && is_callable(config('pagecache.pre_function'))) {
             $preFunction = config('pagecache.pre_function');
-            $body = $preFunction($body);
+            $body = $preFunction($body, $path);
         }
         $this->files->put(
-            $this->join([$path, $file]),
+            $path,
             $body,
             true
         );
