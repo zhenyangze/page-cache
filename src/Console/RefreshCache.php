@@ -65,7 +65,7 @@ class RefreshCache extends Command
         foreach ($this->getFiles($path) as $file) {
             $fullPath = $file->getPathname();
             $relatePath = str_ireplace($path . '/', '', $fullPath);
-            $createTime = $file->getCTime();
+            $createTime = $file->getMTime();
 
             foreach ((array)$timeOutConfig as $category => $time) {
                 if (empty($category) && empty($time)) {
