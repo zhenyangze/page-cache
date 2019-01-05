@@ -151,7 +151,8 @@ class Cache
     {
         //dd($request->route()->getName());
         $name = $request->route()->getName();
-        return $this->isInWhiteList($name) && $this->notInBlackList($name);
+        $domain = array_get($request->server(), 'HTTP_HOST');
+        return $this->isInWhiteList($name) && $this->notInBlackList($name) && $this->isInWhiteDomain($domain);
     }
 
     /**
@@ -165,7 +166,19 @@ class Cache
     {
         return $this->checkInList($name, config('pagecache.whiteList'));
     }
-    
+
+    /**
+     * isInWhiteDomain 
+     *
+     * @param $name
+     *
+     * @return 
+     */
+    protected function isInWhiteDomain($name)
+    {
+        return $this->checkInList($name, config('pagecache.domainList'));
+    }
+
     /**
      * notInBlackList
      *

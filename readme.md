@@ -6,6 +6,7 @@ Fork from `JosephSilber/page-cache`, and make some changes.
 3. add command for checking timeout 
 4. support delete cache file start with category
 5. debug mode would not cache page
+6. domain validate
 
 > 注意：key=a/b/c/d/e这种格式还不支持
 > 按类别设置文件的过期时间，配置文件`config/pagecache.php`
@@ -62,6 +63,11 @@ Open `config/app.php` and add a new item to the `providers` array:
 
 ```php
 Silber\PageCache\LaravelServiceProvider::class,
+```
+
+### published config
+```php
+php artisan vendor:publish --provider="Silber\PageCache\LaravelServiceProvider"
 ```
 
 ### Middleware

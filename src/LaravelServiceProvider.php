@@ -8,6 +8,13 @@ use Silber\PageCache\Console\RefreshCache;
 
 class LaravelServiceProvider extends ServiceProvider
 {
+    public function boot()
+    {
+        $this->publishes([
+            __DIR__ . '/config/pagecache.php' => base_path('config/pagecache.php'),
+        ]);
+    }
+
     /**
      * Register any application services.
      *
