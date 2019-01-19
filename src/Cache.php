@@ -138,6 +138,9 @@ class Cache
      */
     public function shouldCache(Request $request, Response $response)
     {
+        if (($request->ajax() && !$request->pjax()) || $request->wantsJson()) {
+            return false;
+        }
         return config('pagecache.cache', true) && $request->isMethod('GET') && $response->getStatusCode() == 200;
     }
 
