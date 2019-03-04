@@ -224,7 +224,9 @@ class Cache
     public function cache(Request $request, Response $response)
     {
         list($path, $file) = $this->getDirectoryAndFileNames($request);
-
+        if (mb_strlen($file) >= 250 ) {
+            return;
+        }
         $this->files->makeDirectory($path, 0775, true, true);
         $body = $response->getContent();
         $path = $this->join([$path, $file]);
